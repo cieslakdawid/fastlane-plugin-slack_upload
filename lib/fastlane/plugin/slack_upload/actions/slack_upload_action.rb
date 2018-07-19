@@ -81,7 +81,7 @@ module Fastlane
       end
 
       def self.description
-        'Uploads given file to Slack'
+        'Uploads specified file to Slack'
       end
 
       def self.authors
