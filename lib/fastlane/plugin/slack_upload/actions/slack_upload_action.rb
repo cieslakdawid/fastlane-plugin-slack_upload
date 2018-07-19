@@ -43,7 +43,7 @@ module Fastlane
         end
       end
 
-      def self.available_params
+      def self.available_options
         [
           FastlaneCore::ConfigItem.new(key: :slack_api_token,
                                        env_name: "SLACK_API_TOKEN",
