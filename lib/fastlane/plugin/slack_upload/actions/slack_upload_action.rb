@@ -10,13 +10,13 @@ module Fastlane
         filename = params[:file_name]
         initialComment = params[:initial_comment]
 
-        if params[:channel].to_s.length > 0
+        if params[:channel].to_s.length > 0 # From `slack` plugin implementation: https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/slack.rb
           channel = params[:channel]
           channel = ('#' + params[:channel]) unless ['#', '@'].include?(channel[0]) # send message to channel by default
         end
 
         if params[:file_type].to_s.empty?
-          filetype = File.extname(filepath)[1..-1] # Remove '.' from file extension
+          filetype = File.extname(filepath)[1..-1] # Remove '.' from the file extension
         else
           filetype = params[:file_type]
         end
@@ -37,9 +37,9 @@ module Fastlane
                     initial_comment: initialComment
                   )
         rescue => exception
-          UI.error("Upload exception: #{exception}")
+          UI.error("Exception: #{exception}")
         ensure
-          UI.success('Successfully sent Slack notification')
+          UI.success('Successfully sent file to Slack')
         end
       end
 
@@ -81,7 +81,7 @@ module Fastlane
       end
 
       def self.description
-        'Uploads specified file to Slack'
+        'Uploads given file to Slack'
       end
 
       def self.authors
@@ -91,18 +91,19 @@ module Fastlane
       def self.example_code
         [
           'slack_upload(
-            title: "New version #{version} available ",
+            title: "New version #{version} is available ",
             channel: "#general",
             file_path: "./screenshots.zip"
           )',
           'slack_upload(
-            slack_api_token: "xyz",
-            title: "New version #{version} available ",
+            slack_api_token: "xyz", 
+            title: "New version #{version} is available ",
             channel: "#general",
             file_path: "./screenshots.zip",
             file_type: "zip",                        # Optional, type can be recognized from file path,
-            file_name: "screen_shots.zip,           # Optional, name can be recognized from file path,
-          )'
+            file_name: "screen_shots.zip",           # Optional, name can be recognized from file path,
+            initial_comment: "Enjoy!"                # Optional
+            )'
         ]
       end
     end
