@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     fastlane-plugin-slack_upload (0.1.0)
+      slack-ruby-client
 
 GEM
   remote: https://rubygems.org/
@@ -229,7 +230,6 @@ DEPENDENCIES
   rubocop (= 0.55)
   rubocop-require_tools
   simplecov
-  slack-ruby-client
 
 BUNDLED WITH
    1.16.2
