@@ -2,6 +2,7 @@
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-slack_upload)
 
+ ![![RubyGem Download Badge]](https://ruby-gem-downloads-badge.herokuapp.com/fastlane-plugin-slack_upload)
 
 This plugin simply uploads a given file to your Slack. 
 
