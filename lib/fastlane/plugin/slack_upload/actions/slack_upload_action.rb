@@ -2,27 +2,27 @@
 module Fastlane
   module Actions
     class SlackUploadAction < Action
-      def self.run(options)
+      def self.run(params)
         require 'slack-ruby-client'
         
-        title = options[:title]
-        filepath = options[:file_path]
-        filename = options[:file_name]
-        initialComment = options[:initial_comment]
+        title = params[:title]
+        filepath = params[:file_path]
+        filename = params[:file_name]
+        initialComment = params[:initial_comment]
 
-        if options[:channel].to_s.length > 0
-          channel = options[:channel]
-          channel = ('#' + options[:channel]) unless ['#', '@'].include?(channel[0]) # send message to channel by default
+        if params[:channel].to_s.length > 0
+          channel = params[:channel]
+          channel = ('#' + params[:channel]) unless ['#', '@'].include?(channel[0]) # send message to channel by default
         end
 
-        if options[:file_type].to_s.empty?
+        if params[:file_type].to_s.empty?
           filetype = File.extname(filepath)[1..-1] # Remove '.' from file extension
         else
-          filetype = options[:file_type]
+          filetype = params[:file_type]
         end
 
         Slack.configure do |config|
-          config.token = options[:slack_api_token]
+          config.token = params[:slack_api_token]
         end
 
         client = Slack::Web::Client.new
@@ -43,7 +43,7 @@ module Fastlane
         end
       end
 
-      def self.available_options
+      def self.available_params
         [
           FastlaneCore::ConfigItem.new(key: :slack_api_token,
                                        env_name: "SLACK_API_TOKEN",
