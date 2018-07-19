@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'cieslakdawid@gmail.com'
 
   spec.summary       = 'Uploads specified file to Slack'
-  spec.homepage      = "hhttps://github.com/cieslakdawid/fastlane-plugin-slack_upload"
+  spec.homepage      = "https://github.com/cieslakdawid/fastlane-plugin-slack_upload"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
   # since this would cause a circular dependency
 
   spec.add_dependency('slack-ruby-client')
-  
   spec.add_development_dependency('pry')
   spec.add_development_dependency('bundler')
   spec.add_development_dependency('rspec')
