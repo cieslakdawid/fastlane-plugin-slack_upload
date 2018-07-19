@@ -1,12 +1,28 @@
 *.gem
-Gemfile.lock
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+## Specific to RubyMotion:
+.dat*
+.repl_history
+build/
 
 ## Documentation cache and generated files:
 /.yardoc/
 /_yardoc/
 /doc/
 /rdoc/
-fastlane/README.md
-fastlane/report.xml
-coverage
-test-results
+
+## Environment normalization:
+/.bundle/
+/.bin/
+/vendor/
+/lib/bundler/man/

@@ -1,46 +1,109 @@
-require 'fastlane/action'
-require_relative '../helper/slack_upload_helper'
 
 module Fastlane
   module Actions
     class SlackUploadAction < Action
-      def self.run(params)
-        UI.message("The slack_upload plugin is working!")
-      end
+      def self.run(options)
+        require 'slack-ruby-client'
+        
+        title = options[:title]
+        filepath = options[:file_path]
+        filename = options[:file_name]
+        initialComment = options[:initial_comment]
 
-      def self.description
-        "Short rummary"
-      end
+        if options[:channel].to_s.length > 0
+          channel = options[:channel]
+          channel = ('#' + options[:channel]) unless ['#', '@'].include?(channel[0]) # send message to channel by default
+        end
 
-      def self.authors
-        ["Dawid Cieslak"]
-      end
+        if options[:file_type].to_s.empty?
+          filetype = File.extname(filepath)[1..-1] # Remove '.' from file extension
+        else
+          filetype = options[:file_type]
+        end
 
-      def self.return_value
-        # If your method provides a return value, you can describe here what it does
-      end
+        Slack.configure do |config|
+          config.token = options[:slack_api_token]
+        end
 
-      def self.details
-        # Optional:
-        "Full Description"
+        client = Slack::Web::Client.new
+        
+        begin
+          results = client.files_upload(
+                    channels: channel,
+                    as_user: true,
+                    file: Faraday::UploadIO.new(filepath, filetype),
+                    title: title,
+                    filename: filename,
+                    initial_comment: initialComment
+                  )
+        rescue => exception
+          UI.error("Upload exception: #{exception}")
+        ensure
+          UI.success('Successfully sent Slack notification')
+        end
       end
 
       def self.available_options
         [
-          # FastlaneCore::ConfigItem.new(key: :your_option,
-          #                         env_name: "SLACK_UPLOAD_YOUR_OPTION",
-          #                      description: "A description of your option",
-          #                         optional: false,
-          #                             type: String)
+          FastlaneCore::ConfigItem.new(key: :slack_api_token,
+                                       env_name: "SLACK_API_TOKEN",
+                                       sensitive: true,
+                                       description: "Slack API token"),
+          FastlaneCore::ConfigItem.new(key: :title,
+                                       env_name: "SLACK_UPLOAD_TITLE",
+                                       description: "Title of the file",
+                                       optional: false),
+          FastlaneCore::ConfigItem.new(key: :channel,
+                                       env_name: "SLACK_UPLOAD_CHANNEL",
+                                       description: "#channel or @username",
+                                       optional: false),
+          FastlaneCore::ConfigItem.new(key: :file_path,
+                                       env_name: "SLACK_UPLOAD_FILE_PATH",
+                                       description: "Path to the file",
+                                       optional: false),
+          FastlaneCore::ConfigItem.new(key: :file_type,
+                                       env_name: "SLACK_UPLOAD_FILE_TYPE",
+                                       description: "A file type identifier",
+                                       optional: true),
+          FastlaneCore::ConfigItem.new(key: :file_name,
+                                       env_name: "SLACK_UPLOAD_FILE_NAME",
+                                       description: "Filename of file",
+                                       optional: true),
+          FastlaneCore::ConfigItem.new(key: :initial_comment,
+                                       env_name: "SLACK_UPLOAD_INITIAL_COMMENT",
+                                       description: "Initial comment to add to file",
+                                       optional: true)                  
         ]
       end
 
       def self.is_supported?(platform)
-        # Adjust this if your plugin only works for a particular platform (iOS vs. Android, for example)
-        # See: https://docs.fastlane.tools/advanced/#control-configuration-by-lane-and-by-platform
-        #
-        # [:ios, :mac, :android].include?(platform)
         true
+      end
+
+      def self.description
+        'Uploads given file to Slack'
+      end
+
+      def self.authors
+        ['Dawid Cieslak']
+      end
+
+      def self.example_code
+        [
+          'slack_upload(
+            title: "New version #{version} available ",
+            channel: "#general",
+            file_path: "./screenshots.zip"
+          )',
+          'slack_upload(
+            slack_api_token: "xyz",
+            title: "New version #{version} available ",
+            channel: "#general",
+            file_path: "./screenshots.zip",
+            file_type: "zip",                        # Optional, type can be recognized from file path,
+            file_name: "screen_shots.zip,           # Optional, name can be recognized from file path,
+          )'
+        ]
       end
     end
   end
